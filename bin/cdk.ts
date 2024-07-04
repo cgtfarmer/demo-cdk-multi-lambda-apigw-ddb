@@ -2,9 +2,15 @@
 
 import { App } from 'aws-cdk-lib';
 
+import { DbStack } from '../cdk/lib/stacks/db-stack';
+
 import { ApiStack } from '../cdk/lib/stacks/api-stack';
 
 const app = new App();
 
+const dbStack = new DbStack(app, 'DbStack', {});
+
 const apiStack = new ApiStack(app, 'ApiStack', {
+  stateDdbTable: dbStack.stateDdbTable,
+  residentDdbTable: dbStack.residentDdbTable,
 });

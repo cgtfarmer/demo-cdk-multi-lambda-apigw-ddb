@@ -1,6 +1,6 @@
-# CDK Multi-Lambda API Gateway
+# CDK Lambda APIGW DDB
 
-This is a demo showing how to deploy a public, multi-route API Gateway with multiple, simple Lambdas written in TypeScript
+This is a demo showing how to deploy an API Gateway (HTTP API) with multiple TypeScript Lambdas, backed by separate Dynamo DB tables
 
 
 ## Prerequisites

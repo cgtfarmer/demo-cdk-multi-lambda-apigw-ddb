@@ -5,8 +5,12 @@ import { Runtime } from 'aws-cdk-lib/aws-lambda';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { CorsHttpMethod, HttpApi, HttpMethod as ApiGwHttpMethod } from 'aws-cdk-lib/aws-apigatewayv2';
 import { HttpLambdaIntegration } from 'aws-cdk-lib/aws-apigatewayv2-integrations';
+import { TableV2 } from 'aws-cdk-lib/aws-dynamodb';
 
 interface ApiStackProps extends StackProps {
+  residentDdbTable: TableV2;
+
+  stateDdbTable: TableV2;
 }
 
 export class ApiStack extends Stack {
@@ -22,9 +26,11 @@ export class ApiStack extends Stack {
         nodeModules: ['@types/aws-lambda'],
       },
       environment: {
-        TEST_VALUE: 'TEST',
+        DDB_TABLE_NAME: props.stateDdbTable.tableName,
       },
     });
+
+    props.stateDdbTable.grantReadWriteData(stateServiceLambda);
 
     const stateServiceLambdaIntegration =
       new HttpLambdaIntegration('StateServiceIntegration', stateServiceLambda);
@@ -37,9 +43,11 @@ export class ApiStack extends Stack {
         nodeModules: ['@types/aws-lambda'],
       },
       environment: {
-        TEST_VALUE: 'TEST',
+        DDB_TABLE_NAME: props.residentDdbTable.tableName,
       },
     });
+
+    props.residentDdbTable.grantReadWriteData(residentServiceLambda);
 
     const residentServiceLambdaIntegration =
       new HttpLambdaIntegration('ResidentServiceIntegration', residentServiceLambda);
